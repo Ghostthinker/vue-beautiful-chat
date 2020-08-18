@@ -19,6 +19,7 @@
       :messages="messages"
       :participants="participants"
       :show-typing-indicator="showTypingIndicator"
+      :typing-user-array="typingUserArray"
       :colors="colors"
       :always-scroll-to-bottom="alwaysScrollToBottom"
       :show-edition="showEdition"
@@ -118,11 +119,15 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'Write a message...'
+      default: 'Eine Nachricht schreiben...'
     },
     showTypingIndicator: {
       type: String,
       required: true
+    },
+    typingUserArray: {
+        type: Array,
+        required: true
     },
     colors: {
       type: Object,

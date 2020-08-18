@@ -59,7 +59,7 @@
         :data="message.data"
         :message-colors="messageColors"
       />
-      <TypingMessage v-else-if="message.type === 'typing'" :message-colors="messageColors" />
+      <TypingMessage v-else-if="message.type === 'typing'" :message-colors="messageColors" :typing-user-array="typingUserArray" :participants="participants"/>
       <SystemMessage
         v-else-if="message.type === 'system'"
         :data="message.data"
@@ -112,6 +112,12 @@ export default {
     showDeletion: {
       type: Boolean,
       required: true
+    },
+    typingUserArray: {
+      type: Array
+    },
+    participants: {
+        type: Array
     }
   },
   computed: {
