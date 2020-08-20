@@ -23,6 +23,7 @@
       :title-image-url="titleImageUrl"
       :is-open="isOpen"
       :change-context="changeContext"
+      :changeContextTooltip="changeContextTooltip"
       :show-emoji="showEmoji"
       :show-file="showFile"
       :show-edition="showEdition"
@@ -118,6 +119,10 @@ export default {
     },
     changeContext: {
       type: Function,
+      required: true
+    },
+    changeContextTooltip: {
+      type: String,
       required: true
     },
     showFile: {

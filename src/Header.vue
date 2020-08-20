@@ -7,9 +7,20 @@
       </div>
       <div v-else class="sc-header--title">{{ title }}</div>
     </slot>
-    <div v-if="showChangeContextButton" class="sc-header--close-button" @click="changeContext">
-      <v-icon color="white" large>mdi-swap-horizontal-bold</v-icon>
-    </div>
+    <v-tooltip top open-delay="200">
+      <template v-slot:activator="{on, attrs}">
+        <div
+          v-show="showChangeContextButton"
+          class="sc-header--close-button"
+          v-bind="attrs"
+          v-on="on"
+          @click="changeContext"
+        >
+          <v-icon color="white" large>mdi-swap-horizontal-bold</v-icon>
+        </div>
+      </template>
+      <span>{{ changeContextTooltip }}</span>
+    </v-tooltip>
   </div>
 </template>
 
@@ -40,6 +51,10 @@ export default {
     changeContext: {
       type: Function,
       required: true
+    },
+    changeContextTooltip: {
+      type: String,
+      required: false
     },
     colors: {
       type: Object,

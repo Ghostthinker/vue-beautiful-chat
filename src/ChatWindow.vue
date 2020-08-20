@@ -5,6 +5,7 @@
       :title="title"
       :image-url="titleImageUrl"
       :change-context="changeContext"
+      :change-context-tooltip="changeContextTooltip"
       :colors="colors"
       :disable-user-list-toggle="disableUserListToggle"
       @userList="handleUserListToggle"
@@ -84,6 +85,10 @@ export default {
     showChangeContextButton: {
       type: Boolean,
       default: true
+    },
+    changeContextTooltip: {
+      type: String,
+      default: 'Zum Projekt Chat'
     },
     showFile: {
       type: Boolean,
