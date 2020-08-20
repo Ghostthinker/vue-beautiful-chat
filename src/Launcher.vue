@@ -15,14 +15,14 @@
     </div>
     <ChatWindow
       :show-launcher="showLauncher"
-      :show-close-button="showCloseButton"
+      :show-change-context-button="showChangeContextButton"
       :message-list="messageList"
       :on-user-input-submit="onMessageWasSent"
       :participants="participants"
       :title="chatWindowTitle"
       :title-image-url="titleImageUrl"
       :is-open="isOpen"
-      :on-close="close"
+      :change-context="changeContext"
       :show-emoji="showEmoji"
       :show-file="showFile"
       :show-edition="showEdition"
@@ -116,6 +116,10 @@ export default {
       type: Function,
       required: true
     },
+    changeContext: {
+      type: Function,
+      required: true
+    },
     showFile: {
       type: Boolean,
       default: false
@@ -124,7 +128,7 @@ export default {
       type: Boolean,
       default: true
     },
-    showCloseButton: {
+    showChangeContextButton: {
       type: Boolean,
       default: true
     },

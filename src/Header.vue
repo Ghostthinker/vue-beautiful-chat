@@ -1,14 +1,14 @@
 <template>
   <div class="sc-header" :style="{background: colors.header.bg, color: colors.header.text}">
     <slot>
-      <img v-if="imageUrl" class="sc-header--img" :src="imageUrl" alt="" />
-      <div v-if="!disableUserListToggle" class="sc-header--title enabled" @click="toggleUserList">
+      <img v-if="imageUrl" class="sc-header--img" :src="imageUrl" alt="" @click="toggleUserList"/>
+      <div v-if="!disableUserListToggle" class="sc-header--title ">
         {{ title }}
       </div>
       <div v-else class="sc-header--title">{{ title }}</div>
     </slot>
-    <div v-if="showCloseButton" class="sc-header--close-button" @click="onClose">
-      <img :src="icons.close.img" :alt="icons.close.name" />
+    <div v-if="showChangeContextButton" class="sc-header--close-button" @click="changeContext">
+      <v-icon color="white" large>mdi-swap-horizontal-bold</v-icon>
     </div>
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
       type: String,
       required: true
     },
-    onClose: {
+    changeContext: {
       type: Function,
       required: true
     },
@@ -49,7 +49,7 @@ export default {
       type: Boolean,
       default: false
     },
-    showCloseButton: {
+    showChangeContextButton: {
       type: Boolean,
       default: false
     }
@@ -86,6 +86,7 @@ export default {
   padding: 10px;
   width: 44px;
   height: 44px;
+  cursor: pointer;
 }
 
 .sc-header--title {
