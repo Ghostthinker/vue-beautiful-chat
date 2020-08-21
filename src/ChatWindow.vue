@@ -1,10 +1,11 @@
 <template>
   <div class="sc-chat-window" :class="{opened: isOpen, closed: !isOpen}">
     <Header
-      :show-close-button="showCloseButton"
+      :show-change-context-button="showChangeContextButton"
       :title="title"
       :image-url="titleImageUrl"
-      :on-close="onClose"
+      :change-context="changeContext"
+      :change-context-tooltip="changeContextTooltip"
       :colors="colors"
       :disable-user-list-toggle="disableUserListToggle"
       @userList="handleUserListToggle"
@@ -81,9 +82,13 @@ export default {
       type: Boolean,
       default: false
     },
-    showCloseButton: {
+    showChangeContextButton: {
       type: Boolean,
       default: true
+    },
+    changeContextTooltip: {
+      type: String,
+      default: 'Zum Projekt Chat'
     },
     showFile: {
       type: Boolean,
@@ -105,7 +110,7 @@ export default {
       type: Function,
       required: true
     },
-    onClose: {
+    changeContext: {
       type: Function,
       required: true
     },
@@ -126,8 +131,8 @@ export default {
       required: true
     },
     typingUserArray: {
-        type: Array,
-        required: true
+      type: Array,
+      required: true
     },
     colors: {
       type: Object,

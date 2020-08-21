@@ -30,7 +30,7 @@
       ></p>
       <p class="sc-message--text-content" v-html="messageText"></p>
       <p v-if="message.data.meta" class="sc-message--meta" :style="{color: messageColors.color}">
-        {{ date }}
+          <a v-if="sectionTitle" :href="sectionRef" :style="{color: messageColors.color}">{{ sectionTitle }} - </a>{{ date }}
       </p>
       <p v-if="message.isEdited" class="sc-message--edited">
         <IconBase width="10" icon-name="edited">
@@ -113,6 +113,12 @@ export default {
       } else {
         return this.message.data.meta
       }
+    },
+    sectionTitle() {
+      return this.message.sectionTitle;
+    },
+    sectionRef() {
+      return '#' + this.message.sectionId;
     }
   },
   methods: {
