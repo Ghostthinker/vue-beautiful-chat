@@ -7,14 +7,14 @@
       </div>
       <div v-else class="sc-header--title">{{ title }}</div>
     </slot>
-    <v-tooltip top open-delay="200">
+    <v-tooltip v-model="showTooltip" top :open-delay="250">
       <template v-slot:activator="{on, attrs}">
         <div
           v-show="showChangeContextButton"
           class="sc-header--close-button"
           v-bind="attrs"
           v-on="on"
-          @click="changeContext"
+          @click="toggleTooltip"
         >
           <v-icon color="white" large>mdi-swap-horizontal-bold</v-icon>
         </div>
@@ -67,17 +67,28 @@ export default {
     showChangeContextButton: {
       type: Boolean,
       default: false
-    }
+    },
   },
   data() {
     return {
-      inUserList: false
+      inUserList: false,
+      showTooltip: true
     }
   },
   methods: {
     toggleUserList() {
       this.inUserList = !this.inUserList
       this.$emit('userList', this.inUserList)
+    },
+    toggleTooltip() {
+        this.changeContext()
+    }
+  },
+  watch: {
+    changeContextTooltip: function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            this.showTooltip = false;
+        }
     }
   }
 }
