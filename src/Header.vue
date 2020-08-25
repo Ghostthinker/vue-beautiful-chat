@@ -72,7 +72,7 @@ export default {
   data() {
     return {
       inUserList: false,
-      showTooltip: true
+      showTooltip: false
     }
   },
   methods: {
