@@ -124,8 +124,7 @@ export default {
 .sc-header--close-button {
   width: 40px;
   align-self: center;
-  height: 40px;
-  margin-right: 10px;
+  margin-right: 5px;
   box-sizing: border-box;
   cursor: pointer;
   border-radius: 5px;
