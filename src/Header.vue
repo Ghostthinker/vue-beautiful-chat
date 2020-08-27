@@ -7,14 +7,14 @@
       </div>
       <div v-else class="sc-header--title">{{ title }}</div>
     </slot>
-    <v-tooltip top open-delay="200">
+    <v-tooltip v-model="showTooltip" top :open-delay="250">
       <template v-slot:activator="{on, attrs}">
         <div
           v-show="showChangeContextButton"
           class="sc-header--close-button"
           v-bind="attrs"
           v-on="on"
-          @click="changeContext"
+          @click="toggleTooltip"
         >
           <v-icon color="white" large>mdi-swap-horizontal-bold</v-icon>
         </div>
@@ -67,17 +67,28 @@ export default {
     showChangeContextButton: {
       type: Boolean,
       default: false
-    }
+    },
   },
   data() {
     return {
-      inUserList: false
+      inUserList: false,
+      showTooltip: false
     }
   },
   methods: {
     toggleUserList() {
       this.inUserList = !this.inUserList
       this.$emit('userList', this.inUserList)
+    },
+    toggleTooltip() {
+        this.changeContext()
+    }
+  },
+  watch: {
+    changeContextTooltip: function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            this.showTooltip = false;
+        }
     }
   }
 }
@@ -124,16 +135,11 @@ export default {
 .sc-header--close-button {
   width: 40px;
   align-self: center;
-  height: 40px;
-  margin-right: 10px;
+  margin-right: 5px;
   box-sizing: border-box;
   cursor: pointer;
   border-radius: 5px;
   margin-left: auto;
-}
-
-.sc-header--close-button:hover {
-  box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, 0.1);
 }
 
 .sc-header--close-button img {
