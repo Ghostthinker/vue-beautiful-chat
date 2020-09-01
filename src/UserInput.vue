@@ -141,16 +141,13 @@ export default {
       type: Object,
       required: true
     },
-    doNotResetInputFlag: {
-      type: Boolean,
-      default: () => false
-    }
   },
   data() {
     return {
       file: null,
       inputActive: false,
-      store
+      store,
+      doNotResetInputFlag: false
     }
   },
   computed: {
