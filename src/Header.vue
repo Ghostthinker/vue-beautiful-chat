@@ -1,15 +1,26 @@
 <template>
   <div class="sc-header" :style="{background: colors.header.bg, color: colors.header.text}">
     <slot>
-      <img v-if="imageUrl" class="sc-header--img" :src="imageUrl" alt="" />
-      <div v-if="!disableUserListToggle" class="sc-header--title enabled" @click="toggleUserList">
+      <img v-if="imageUrl" class="sc-header--img" :src="imageUrl" alt="" @click="toggleUserList"/>
+      <div v-if="!disableUserListToggle" class="sc-header--title ">
         {{ title }}
       </div>
       <div v-else class="sc-header--title">{{ title }}</div>
     </slot>
-    <div v-if="showCloseButton" class="sc-header--close-button" @click="onClose">
-      <img :src="icons.close.img" :alt="icons.close.name" />
-    </div>
+    <v-tooltip v-model="showTooltip" top :open-delay="250">
+      <template v-slot:activator="{on, attrs}">
+        <div
+          v-show="showChangeContextButton"
+          class="sc-header--close-button"
+          v-bind="attrs"
+          v-on="on"
+          @click="toggleTooltip"
+        >
+          <v-icon color="white" large>mdi-swap-horizontal-bold</v-icon>
+        </div>
+      </template>
+      <span>{{ changeContextTooltip }}</span>
+    </v-tooltip>
   </div>
 </template>
 
@@ -37,9 +48,13 @@ export default {
       type: String,
       required: true
     },
-    onClose: {
+    changeContext: {
       type: Function,
       required: true
+    },
+    changeContextTooltip: {
+      type: String,
+      required: false
     },
     colors: {
       type: Object,
@@ -49,20 +64,31 @@ export default {
       type: Boolean,
       default: false
     },
-    showCloseButton: {
+    showChangeContextButton: {
       type: Boolean,
       default: false
-    }
+    },
   },
   data() {
     return {
-      inUserList: false
+      inUserList: false,
+      showTooltip: false
     }
   },
   methods: {
     toggleUserList() {
       this.inUserList = !this.inUserList
       this.$emit('userList', this.inUserList)
+    },
+    toggleTooltip() {
+        this.changeContext()
+    }
+  },
+  watch: {
+    changeContextTooltip: function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            this.showTooltip = false;
+        }
     }
   }
 }
@@ -86,6 +112,7 @@ export default {
   padding: 10px;
   width: 44px;
   height: 44px;
+  cursor: pointer;
 }
 
 .sc-header--title {
@@ -108,16 +135,11 @@ export default {
 .sc-header--close-button {
   width: 40px;
   align-self: center;
-  height: 40px;
-  margin-right: 10px;
+  margin-right: 5px;
   box-sizing: border-box;
   cursor: pointer;
   border-radius: 5px;
   margin-left: auto;
-}
-
-.sc-header--close-button:hover {
-  box-shadow: 0px 2px 5px rgba(0.2, 0.2, 0.5, 0.1);
 }
 
 .sc-header--close-button img {

@@ -1,10 +1,11 @@
 <template>
   <div class="sc-chat-window" :class="{opened: isOpen, closed: !isOpen}">
     <Header
-      :show-close-button="showCloseButton"
+      :show-change-context-button="showChangeContextButton"
       :title="title"
       :image-url="titleImageUrl"
-      :on-close="onClose"
+      :change-context="changeContext"
+      :change-context-tooltip="changeContextTooltip"
       :colors="colors"
       :disable-user-list-toggle="disableUserListToggle"
       @userList="handleUserListToggle"
@@ -19,6 +20,7 @@
       :messages="messages"
       :participants="participants"
       :show-typing-indicator="showTypingIndicator"
+      :typing-user-array="typingUserArray"
       :colors="colors"
       :always-scroll-to-bottom="alwaysScrollToBottom"
       :show-edition="showEdition"
@@ -80,9 +82,13 @@ export default {
       type: Boolean,
       default: false
     },
-    showCloseButton: {
+    showChangeContextButton: {
       type: Boolean,
       default: true
+    },
+    changeContextTooltip: {
+      type: String,
+      default: 'Zum Projekt Chat'
     },
     showFile: {
       type: Boolean,
@@ -104,7 +110,7 @@ export default {
       type: Function,
       required: true
     },
-    onClose: {
+    changeContext: {
       type: Function,
       required: true
     },
@@ -118,10 +124,14 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'Write a message...'
+      default: 'Eine Nachricht schreiben...'
     },
     showTypingIndicator: {
       type: String,
+      required: true
+    },
+    typingUserArray: {
+      type: Array,
       required: true
     },
     colors: {
@@ -191,6 +201,7 @@ export default {
   animation: fadeIn;
   animation-duration: 0.3s;
   animation-timing-function: ease-in-out;
+  z-index: 10020;
 }
 
 .sc-chat-window.closed {

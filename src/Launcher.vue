@@ -15,14 +15,15 @@
     </div>
     <ChatWindow
       :show-launcher="showLauncher"
-      :show-close-button="showCloseButton"
+      :show-change-context-button="showChangeContextButton"
       :message-list="messageList"
       :on-user-input-submit="onMessageWasSent"
       :participants="participants"
       :title="chatWindowTitle"
       :title-image-url="titleImageUrl"
       :is-open="isOpen"
-      :on-close="close"
+      :change-context="changeContext"
+      :changeContextTooltip="changeContextTooltip"
       :show-emoji="showEmoji"
       :show-file="showFile"
       :show-edition="showEdition"
@@ -33,6 +34,7 @@
       :always-scroll-to-bottom="alwaysScrollToBottom"
       :message-styling="messageStyling"
       :disable-user-list-toggle="disableUserListToggle"
+      :typing-user-array="typingUserArray"
       @scrollToTop="$emit('scrollToTop')"
       @onType="$emit('onType')"
       @edit="$emit('edit', $event)"
@@ -115,6 +117,14 @@ export default {
       type: Function,
       required: true
     },
+    changeContext: {
+      type: Function,
+      required: true
+    },
+    changeContextTooltip: {
+      type: String,
+      required: true
+    },
     showFile: {
       type: Boolean,
       default: false
@@ -123,7 +133,7 @@ export default {
       type: Boolean,
       default: true
     },
-    showCloseButton: {
+    showChangeContextButton: {
       type: Boolean,
       default: true
     },
@@ -153,7 +163,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'Write a message...'
+      default: 'Eine Nachricht schreiben...'
     },
     showTypingIndicator: {
       type: String,
@@ -216,6 +226,11 @@ export default {
     disableUserListToggle: {
       type: Boolean,
       default: false
+    },
+    typingUserArray: {
+      type: Array,
+      required: true,
+      default: () => []
     }
   },
   computed: {
@@ -225,11 +240,11 @@ export default {
       }
 
       if (this.participants.length === 0) {
-        return 'You'
+        return 'Du'
       } else if (this.participants.length > 1) {
-        return 'You, ' + this.participants[0].name + ' & others'
+        return 'Du, ' + this.participants[0].name + ' & andere'
       } else {
-        return 'You & ' + this.participants[0].name
+        return 'Du & ' + this.participants[0].name
       }
     }
   },
