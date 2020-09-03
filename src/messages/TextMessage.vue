@@ -118,7 +118,7 @@ export default {
       return this.message.sectionTitle;
     },
     sectionRef() {
-      return '#' + this.message.sectionId;
+      return '#Section-' + this.message.sectionId;
     }
   },
   methods: {
