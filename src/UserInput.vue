@@ -38,7 +38,6 @@
         @blur="setInputActive(false)"
         @keydown="handleKey"
         @focusUserInput="focusUserInput()"
-        @onchange="changeText"
       ></div>
       <div class="sc-user-input--buttons">
         <div class="sc-user-input--button"></div>
