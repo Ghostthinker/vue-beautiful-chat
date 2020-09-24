@@ -290,9 +290,6 @@ export default {
     },
     _editFinish() {
       this.store.editMessage = null
-    },
-    changeText(evt) {
-        console.log(evt)
     }
   }
 }
