@@ -38,6 +38,7 @@
         @blur="setInputActive(false)"
         @keydown="handleKey"
         @focusUserInput="focusUserInput()"
+        @onchange="changeText"
       ></div>
       <div class="sc-user-input--buttons">
         <div class="sc-user-input--button"></div>
@@ -195,8 +196,7 @@ export default {
         this._editFinish()
         event.preventDefault()
       }
-
-      this.$emit('onType')
+      this.$emit('onType', this.$refs.userInput.textContent)
     },
     focusUserInput() {
       this.$nextTick(() => {
@@ -291,6 +291,9 @@ export default {
     },
     _editFinish() {
       this.store.editMessage = null
+    },
+    changeText(evt) {
+        console.log(evt)
     }
   }
 }
