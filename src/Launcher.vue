@@ -36,7 +36,7 @@
       :disable-user-list-toggle="disableUserListToggle"
       :typing-user-array="typingUserArray"
       @scrollToTop="$emit('scrollToTop')"
-      @onType="$emit('onType')"
+      @onType="$emit('onType', $event)"
       @edit="$emit('edit', $event)"
       @remove="$emit('remove', $event)"
     >
