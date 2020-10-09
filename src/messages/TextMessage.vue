@@ -136,8 +136,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 a.chatLink {
   color: inherit !important;
+  text-decoration: underline;
 }
 </style>
