@@ -60,7 +60,8 @@ export default {
 }
 .img-msg {
   border-radius: 50%;
-  width: 50px;
+  width: 25px;
+  height: 25px;
 }
 .user-element {
   font-size: 20px;
