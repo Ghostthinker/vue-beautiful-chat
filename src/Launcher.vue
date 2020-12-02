@@ -28,6 +28,7 @@
       :show-file="showFile"
       :show-edition="showEdition"
       :show-deletion="showDeletion"
+      :show-reply="showReply"
       :placeholder="placeholder"
       :show-typing-indicator="showTypingIndicator"
       :colors="colors"
@@ -102,6 +103,10 @@ export default {
       default: false
     },
     showDeletion: {
+      type: Boolean,
+      default: false
+    },
+    showReply: {
       type: Boolean,
       default: false
     },

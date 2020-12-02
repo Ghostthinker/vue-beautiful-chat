@@ -14,6 +14,7 @@
       :message-styling="messageStyling"
       :show-edition="showEdition"
       :show-deletion="showDeletion"
+      :show-reply="showReply"
       @remove="$emit('remove', message)"
     >
       <template v-slot:user-avatar="scopedProps">
@@ -45,6 +46,7 @@
       :message-styling="messageStyling"
       :show-edition="showEdition"
       :show-deletion="showDeletion"
+      :show-reply="showReply"
       :typing-user-array="typingUserArray"
       :participants="participants"
     />
@@ -93,6 +95,10 @@ export default {
       required: true
     },
     showDeletion: {
+      type: Boolean,
+      required: true
+    },
+    showReply: {
       type: Boolean,
       required: true
     }

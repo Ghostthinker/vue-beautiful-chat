@@ -30,6 +30,7 @@
         :author-name="authorName"
         :show-edition="showEdition"
         :show-deletion="showDeletion"
+        :show-reply="showReply"
         @remove="$emit('remove')"
       >
         <template v-slot:default="scopedProps">
@@ -113,11 +114,17 @@ export default {
       type: Boolean,
       required: true
     },
+    showReply: {
+      type: Boolean,
+      required: false
+    },
     typingUserArray: {
-      type: Array
+      type: Array,
+      required: false
     },
     participants: {
-        type: Array
+      type: Array,
+      required: false
     }
   },
   computed: {

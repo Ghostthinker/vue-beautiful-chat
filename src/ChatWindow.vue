@@ -25,6 +25,7 @@
       :always-scroll-to-bottom="alwaysScrollToBottom"
       :show-edition="showEdition"
       :show-deletion="showDeletion"
+      :show-reply="showReply"
       :message-styling="messageStyling"
       @scrollToTop="$emit('scrollToTop')"
       @remove="$emit('remove', $event)"
@@ -155,6 +156,10 @@ export default {
       required: true
     },
     showDeletion: {
+      type: Boolean,
+      required: true
+    },
+    showReply: {
       type: Boolean,
       required: true
     }

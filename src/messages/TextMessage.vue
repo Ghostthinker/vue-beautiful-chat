@@ -12,12 +12,18 @@
           </IconBase>
         </button>
         <button
-          v-if="showDeletion && me && message.id != null && message.id != undefined"
+          v-if="showDeletion && me && message.id != null && message.id !== undefined"
           @click="$emit('remove')"
         >
           <IconBase :color="messageColors.color" width="10" icon-name="remove">
             <IconCross />
           </IconBase>
+        </button>
+        <button
+          v-if="showReply && !me && message.id != null && message.id !== undefined"
+          @click="$emit('reply')"
+        >
+          <v-icon :color="messageColors.color">mdi-reply</v-icon>
         </button>
         <slot name="text-message-toolbox" :message="message" :me="me"> </slot>
       </div>
@@ -75,6 +81,10 @@ export default {
       required: true
     },
     showDeletion: {
+      type: Boolean,
+      required: true
+    },
+    showReply: {
       type: Boolean,
       required: true
     },
