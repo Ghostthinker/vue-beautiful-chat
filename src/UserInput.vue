@@ -141,6 +141,10 @@ export default {
       type: Object,
       required: true
     },
+    messageParent: {
+      type: Object,
+      required: false
+    }
   },
   data() {
     return {
@@ -237,11 +241,13 @@ export default {
             this.onSubmit({
               author: 'me',
               type: 'text',
-              data: {text}
+              data: {text},
+              parent_id: this.messageParent ? this.messageParent.id : null
             })
           )
         }
       }
+      this.$emit('messageSend')
     },
     _submitTextWhenFile(event, text, file) {
       if (text && text.length > 0) {

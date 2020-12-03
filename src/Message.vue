@@ -32,6 +32,7 @@
         :show-deletion="showDeletion"
         :show-reply="showReply"
         @remove="$emit('remove')"
+        @reply="$emit('reply')"
       >
         <template v-slot:default="scopedProps">
           <slot

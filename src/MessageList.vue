@@ -16,6 +16,11 @@
       :show-deletion="showDeletion"
       :show-reply="showReply"
       @remove="$emit('remove', message)"
+      @reply="$emit('reply',
+      {
+        'message': message,
+        'author' : profile(message.author)
+      })"
     >
       <template v-slot:user-avatar="scopedProps">
         <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"> </slot>

@@ -29,6 +29,7 @@
       :message-styling="messageStyling"
       @scrollToTop="$emit('scrollToTop')"
       @remove="$emit('remove', $event)"
+      @reply="setReplyPreviewData"
     >
       <template v-slot:user-avatar="scopedProps">
         <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"> </slot>
@@ -51,6 +52,13 @@
         </slot>
       </template>
     </MessageList>
+    <ReplyPreview
+      v-if="showReplyPreview"
+      :message="replyPreviewMessage"
+      :author="replyPreviewAuthor"
+      @closeReplyPreview="closeReplyPreview"
+    >
+    </ReplyPreview>
     <UserInput
       v-if="!showUserList"
       :show-emoji="showEmoji"
@@ -59,8 +67,10 @@
       :show-file="showFile"
       :placeholder="placeholder"
       :colors="colors"
+      :message-parent="replyPreviewMessage"
       @onType="$emit('onType', $event)"
       @edit="$emit('edit', $event)"
+      @messageSend="closeReplyPreview"
     />
   </div>
 </template>
@@ -70,13 +80,15 @@ import Header from './Header.vue'
 import MessageList from './MessageList.vue'
 import UserInput from './UserInput.vue'
 import UserList from './UserList.vue'
+import ReplyPreview from './ReplyPreview.vue'
 
 export default {
   components: {
     Header,
     MessageList,
     UserInput,
-    UserList
+    UserList,
+    ReplyPreview
   },
   props: {
     showEmoji: {
@@ -166,14 +178,17 @@ export default {
   },
   data() {
     return {
-      showUserList: false
+      showUserList: false,
+      replyPreviewMessage: null,
+      replyPreviewAuthor: null
     }
   },
   computed: {
     messages() {
-      let messages = this.messageList
-
-      return messages
+      return this.messageList
+    },
+    showReplyPreview() {
+      return this.replyPreviewMessage && this.replyPreviewMessage
     }
   },
   methods: {
@@ -182,6 +197,14 @@ export default {
     },
     getSuggestions() {
       return this.messages.length > 0 ? this.messages[this.messages.length - 1].suggestions : []
+    },
+    setReplyPreviewData(data) {
+      this.replyPreviewMessage = data.message
+      this.replyPreviewAuthor = data.author
+    },
+    closeReplyPreview() {
+      this.replyPreviewMessage = null
+      this.replyPreviewAuthor = null
     }
   }
 }
