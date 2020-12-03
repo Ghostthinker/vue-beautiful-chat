@@ -1,5 +1,5 @@
 <template>
-  <div class="sc-message">
+  <div :id="'message' + message.id" class="sc-message">
     <div
       class="sc-message--content"
       :class="{

@@ -1,5 +1,5 @@
 <template>
-  <div class="sc-reply-preview lighten-5" :style="cssProps">
+  <div class="sc-reply-preview" :style="cssProps">
     <div class="sc-reply-preview-message-text"  :class="isClientMessage ? 'sc-reply-preview-message-text-client-message' : 'sc-reply-preview-message-text-other'" >
       <span :class="isClientMessage ? 'sc-reply-preview-message-author-client-message' : 'sc-reply-preview-message-author-other'">{{ author }}</span>
       <div v-html="messageText"></div>
@@ -58,6 +58,7 @@ export default {
   filter: brightness(90%);
   background-color: var(--bg-color-reply-message);
   border-radius: 6px;
+  cursor: pointer;
 }
 
 .sc-reply-preview-message-text {

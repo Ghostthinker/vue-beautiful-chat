@@ -36,10 +36,12 @@
       ></p>
       <replyMessage
         v-if="message.parent"
+        :data-parent="message.parent.id"
         :message="message.parent"
         :author="message.parentAuthor"
         :isClientMessage="message.author === 'me'"
         :messageColors="messageColors"
+        @click.native="scrollToParentMessage"
       >
       </replyMessage>
       <p class="sc-message--text-content" v-html="messageText"></p>
@@ -151,6 +153,10 @@ export default {
         first.getMonth() === second.getMonth() &&
         first.getDate() === second.getDate()
       return sameDay
+    },
+    scrollToParentMessage(data) {
+        const parentMesage = data.currentTarget.dataset.parent
+        document.getElementById('message' + parentMesage).scrollIntoView()
     }
   }
 }
