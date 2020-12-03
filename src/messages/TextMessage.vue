@@ -34,6 +34,14 @@
         class="sc-message--text-content sc-message--text-author"
         v-html="'~' + authorName"
       ></p>
+      <replyMessage
+        v-if="message.parent"
+        :message="message.parent"
+        :author="message.parentAuthor"
+        :isClientMessage="message.author === 'me'"
+        :messageColors="messageColors"
+      >
+      </replyMessage>
       <p class="sc-message--text-content" v-html="messageText"></p>
       <p v-if="message.data.meta" class="sc-message--meta" :style="{color: messageColors.color}">
           <a v-if="sectionTitle" :href="sectionRef" :style="{color: messageColors.color}">{{ sectionTitle }} - </a>{{ date }}
@@ -56,12 +64,14 @@ import escapeGoat from 'escape-goat'
 import Autolinker from 'autolinker'
 import store from './../store/'
 const fmt = require('msgdown')
+import ReplyMessage from './ReplyMessage.vue'
 
 export default {
   components: {
     IconBase,
     IconCross,
-    IconEdit
+    IconEdit,
+    ReplyMessage
   },
   props: {
     message: {
