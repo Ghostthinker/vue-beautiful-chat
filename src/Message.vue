@@ -1,5 +1,5 @@
 <template>
-  <div class="sc-message">
+  <div :id="'message' + message.id" class="sc-message">
     <div
       class="sc-message--content"
       :class="{
@@ -30,7 +30,9 @@
         :author-name="authorName"
         :show-edition="showEdition"
         :show-deletion="showDeletion"
+        :show-reply="showReply"
         @remove="$emit('remove')"
+        @reply="$emit('reply')"
       >
         <template v-slot:default="scopedProps">
           <slot
@@ -113,11 +115,17 @@ export default {
       type: Boolean,
       required: true
     },
+    showReply: {
+      type: Boolean,
+      required: false
+    },
     typingUserArray: {
-      type: Array
+      type: Array,
+      required: false
     },
     participants: {
-        type: Array
+      type: Array,
+      required: false
     }
   },
   computed: {

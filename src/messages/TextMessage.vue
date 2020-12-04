@@ -12,12 +12,18 @@
           </IconBase>
         </button>
         <button
-          v-if="showDeletion && me && message.id != null && message.id != undefined"
+          v-if="showDeletion && me && message.id != null && message.id !== undefined"
           @click="$emit('remove')"
         >
           <IconBase :color="messageColors.color" width="10" icon-name="remove">
             <IconCross />
           </IconBase>
+        </button>
+        <button
+          v-if="showReply && !me && message.id != null && message.id !== undefined"
+          @click="$emit('reply')"
+        >
+          <v-icon :color="messageColors.color">mdi-reply</v-icon>
         </button>
         <slot name="text-message-toolbox" :message="message" :me="me"> </slot>
       </div>
@@ -28,6 +34,16 @@
         class="sc-message--text-content sc-message--text-author"
         v-html="'~' + authorName"
       ></p>
+      <replyMessage
+        v-if="message.parent"
+        :data-parent="message.parent.id"
+        :message="message.parent"
+        :author="message.parentAuthor"
+        :isClientMessage="message.author === 'me'"
+        :messageColors="messageColors"
+        @click.native="scrollToParentMessage"
+      >
+      </replyMessage>
       <p class="sc-message--text-content" v-html="messageText"></p>
       <p v-if="message.data.meta" class="sc-message--meta" :style="{color: messageColors.color}">
           <a v-if="sectionTitle" :href="sectionRef" :style="{color: messageColors.color}">{{ sectionTitle }} - </a>{{ date }}
@@ -50,12 +66,14 @@ import escapeGoat from 'escape-goat'
 import Autolinker from 'autolinker'
 import store from './../store/'
 const fmt = require('msgdown')
+import ReplyMessage from './ReplyMessage.vue'
 
 export default {
   components: {
     IconBase,
     IconCross,
-    IconEdit
+    IconEdit,
+    ReplyMessage
   },
   props: {
     message: {
@@ -75,6 +93,10 @@ export default {
       required: true
     },
     showDeletion: {
+      type: Boolean,
+      required: true
+    },
+    showReply: {
       type: Boolean,
       required: true
     },
@@ -131,6 +153,13 @@ export default {
         first.getMonth() === second.getMonth() &&
         first.getDate() === second.getDate()
       return sameDay
+    },
+    scrollToParentMessage(data) {
+      const parentMessageId = data.currentTarget.dataset.parent
+      const parentMessage = document.getElementById('message' + parentMessageId)
+      if(parentMessage) {
+        parentMessage.scrollIntoView()
+      }
     }
   }
 }

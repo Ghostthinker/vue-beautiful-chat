@@ -14,7 +14,13 @@
       :message-styling="messageStyling"
       :show-edition="showEdition"
       :show-deletion="showDeletion"
+      :show-reply="showReply"
       @remove="$emit('remove', message)"
+      @reply="$emit('reply',
+      {
+        'message': message,
+        'author' : profile(message.author)
+      })"
     >
       <template v-slot:user-avatar="scopedProps">
         <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"> </slot>
@@ -45,6 +51,7 @@
       :message-styling="messageStyling"
       :show-edition="showEdition"
       :show-deletion="showDeletion"
+      :show-reply="showReply"
       :typing-user-array="typingUserArray"
       :participants="participants"
     />
@@ -95,6 +102,10 @@ export default {
     showDeletion: {
       type: Boolean,
       required: true
+    },
+    showReply: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -138,5 +149,6 @@ export default {
   overflow-y: auto;
   background-size: 100%;
   padding: 40px 0px;
+  scroll-behavior: smooth;
 }
 </style>
