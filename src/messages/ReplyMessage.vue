@@ -2,7 +2,17 @@
   <div class="sc-reply-preview" :style="cssProps">
     <div class="sc-reply-preview-message-text"  :class="isClientMessage ? 'sc-reply-preview-message-text-client-message' : 'sc-reply-preview-message-text-other'" >
       <span :class="isClientMessage ? 'sc-reply-preview-message-author-client-message' : 'sc-reply-preview-message-author-other'">{{ author }}</span>
-      <div v-html="messageText"></div>
+      <v-tooltip bottom open-delay="350" max-width="250px">
+        <template v-slot:activator="{ on, attrs }">
+          <div
+            v-on="on"
+            v-bind="attrs"
+          >
+            <div v-html="messageTextShorted"></div>
+          </div>
+        </template>
+          <div v-html="messageText"></div>
+      </v-tooltip>
     </div>
   </div>
 </template>
@@ -40,6 +50,12 @@ export default {
         className: 'chatLink',
         truncate: {length: 50, location: 'smart'}
       })
+    },
+    messageTextShorted() {
+      if (this.messageText.length > 40) {
+        return this.messageText.substring(0, 39) + '...'
+      }
+      return this.messageText
     },
     cssProps() {
       return {
