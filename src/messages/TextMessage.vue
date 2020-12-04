@@ -155,8 +155,11 @@ export default {
       return sameDay
     },
     scrollToParentMessage(data) {
-        const parentMesage = data.currentTarget.dataset.parent
-        document.getElementById('message' + parentMesage).scrollIntoView()
+      const parentMessageId = data.currentTarget.dataset.parent
+      const parentMessage = document.getElementById('message' + parentMessageId)
+      if(parentMessage) {
+        parentMessage.scrollIntoView()
+      }
     }
   }
 }
