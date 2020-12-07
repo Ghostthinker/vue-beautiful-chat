@@ -7,7 +7,7 @@
           <v-icon @click="$emit('closeReplyPreview')">mdi-close</v-icon>
         </v-btn>
       </div>
-      <div v-html="messageText"></div>
+      <div v-html="messageTextShorted"></div>
     </div>
   </div>
 </template>
@@ -37,7 +37,13 @@ export default {
         className: 'chatLink',
         truncate: {length: 50, location: 'smart'}
       })
-    }
+    },
+    messageTextShorted() {
+      if (this.messageText.length > 200) {
+        return this.messageText.substring(0, 199) + '...'
+      }
+      return this.messageText
+    },
   }
 }
 </script>
