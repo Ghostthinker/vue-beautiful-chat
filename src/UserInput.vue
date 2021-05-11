@@ -151,7 +151,8 @@ export default {
       file: null,
       inputActive: false,
       store,
-      doNotResetInputFlag: false
+      doNotResetInputFlag: false,
+      mentioning: false
     }
   },
   computed: {
@@ -199,7 +200,59 @@ export default {
         this._editFinish()
         event.preventDefault()
       }
+      this.checkMentioning(event)
       this.$emit('onType', this.$refs.userInput.textContent)
+    },
+    checkMentioning(event) {
+      const cursorPosition = this._getCaretPosition()
+      const text = this.$refs.userInput.textContent
+      const textBeforeCursor = text.slice(0, cursorPosition)
+      const atTextBeforeCursor = textBeforeCursor.split(' @')
+      if (atTextBeforeCursor.length > 0) {
+        const foundMentioning = atTextBeforeCursor[atTextBeforeCursor.length - 1]
+        const atIndex = textBeforeCursor.lastIndexOf('@')
+        // at sign is at beginning of text
+        if (atIndex === 0) {
+          this.mentioning = true
+          console.log('start mentioning')
+          this.$emit('startMentioning', this.$refs.userInput.textContent)
+        }
+        // at sign has a blank before
+        else if (textBeforeCursor[atIndex - 1] === ' ') {
+          this.mentioning = true
+          console.log('start mentioning')
+          this.$emit('startMentioning', this.$refs.userInput.textContent)
+        } else {
+          this.mentioning = false
+          console.log('end mentioning')
+          this.$emit('endMentioning', this.$refs.userInput.textContent)
+        }
+      }
+
+      //   if (text[atIndex - 1] === ' ' || text[atIndex] - 1)
+      // }
+      // // check for delete
+      // if (text.slice(0, cursorPosition))
+      //
+      // if (!this.mentioning) {
+      //   const isTypingAt =
+      //     event.key === '@' && (text.length === 0 || text[cursorPosition - 1] === ' ')
+      //   const atFoundBeforeBackspace =
+      //     event.key === 'Backspace' &&
+      //     text[cursorPosition - 1] === '@' &&
+      //     text[cursorPosition - 2] === ' '
+      //   if (isTypingAt || atFoundBeforeBackspace) {
+      //     this.mentioning = true
+      //     console.log('start mentioning')
+      //     this.$emit('startMentioning', this.$refs.userInput.textContent)
+      //   }
+      // } else {
+      //   if (this.mentioning && event.key === ' ' && text[cursorPosition - 1] === '@') {
+      //     this.mentioning = false
+      //     console.log('end mentioning')
+      //     this.$emit('endMentioning', this.$refs.userInput.textContent)
+      //   }
+      // }
     },
     focusUserInput() {
       this.$nextTick(() => {
@@ -229,6 +282,9 @@ export default {
         this.$refs.userInput.innerHTML = ''
       }
       this.doNotResetInputFlag = false
+    },
+    onChange(value) {
+      console.log(value)
     },
     _submitText(event) {
       const text = this.$refs.userInput.textContent
@@ -296,6 +352,32 @@ export default {
     },
     _editFinish() {
       this.store.editMessage = null
+    },
+    _getCaretPosition() {
+      const editableDiv = this.$refs.userInput
+      let caretPos = 0
+      let sel
+      let range
+      if (window.getSelection) {
+        sel = window.getSelection()
+        if (sel.rangeCount) {
+          range = sel.getRangeAt(0)
+          if (range.commonAncestorContainer.parentNode === editableDiv) {
+            caretPos = range.endOffset
+          }
+        }
+      } else if (document.selection && document.selection.createRange) {
+        range = document.selection.createRange()
+        if (range.parentElement() === editableDiv) {
+          let tempEl = document.createElement('span')
+          editableDiv.insertBefore(tempEl, editableDiv.firstChild)
+          let tempRange = range.duplicate()
+          tempRange.moveToElementText(tempEl)
+          tempRange.setEndPoint('EndToEnd', range)
+          caretPos = tempRange.text.length
+        }
+      }
+      return caretPos
     }
   }
 }

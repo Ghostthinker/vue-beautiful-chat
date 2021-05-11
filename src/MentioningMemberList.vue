@@ -25,6 +25,8 @@ export default {
   background-color: #f4f7f9;
   max-height: 200px;
   overflow-y: auto;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
 }
 
 .sc-mentioning-member-container {
