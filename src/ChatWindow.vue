@@ -59,6 +59,10 @@
       @closeReplyPreview="closeReplyPreview"
     >
     </ReplyPreview>
+    <MentioningMemberList
+      :participants="participants"
+    >
+    </MentioningMemberList>
     <UserInput
       v-if="!showUserList"
       :show-emoji="showEmoji"
@@ -81,9 +85,11 @@ import MessageList from './MessageList.vue'
 import UserInput from './UserInput.vue'
 import UserList from './UserList.vue'
 import ReplyPreview from './ReplyPreview.vue'
+import MentioningMemberList from './MentioningMemberList.vue'
 
 export default {
   components: {
+    MentioningMemberList,
     Header,
     MessageList,
     UserInput,
@@ -274,14 +280,15 @@ export default {
   }
 }
 </style>
+
 <style>
 .online-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background-color: #9dff00;
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(112,112,112,1);
-    -moz-box-shadow: 0px 0px 0px 2px rgba(112,112,112,1);
-    box-shadow: 0px 0px 0px 2.5px rgba(112,112,112,1);
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: #9dff00;
+  -webkit-box-shadow: 0px 0px 0px 2px rgba(112, 112, 112, 1);
+  -moz-box-shadow: 0px 0px 0px 2px rgba(112, 112, 112, 1);
+  box-shadow: 0px 0px 0px 2.5px rgba(112, 112, 112, 1);
 }
 </style>
