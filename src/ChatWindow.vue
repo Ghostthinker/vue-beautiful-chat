@@ -63,6 +63,7 @@
       v-if="isMentioning"
       :search-text="mentioningText"
       :participants="participants"
+      @mentionMember="mentionMember"
     >
     </MentioningMemberList>
     <UserInput
@@ -224,6 +225,10 @@ export default {
     },
     onEndMentioning() {
       this.mentioningText = ''
+      this.isMentioning = false
+    },
+    mentionMember(user) {
+      console.log(user)
       this.isMentioning = false
     }
   }

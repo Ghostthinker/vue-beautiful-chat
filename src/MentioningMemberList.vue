@@ -5,8 +5,10 @@
       :key="idx"
       class="sc-mentioning-member-container"
     >
-      <img :src="user.imageUrl" class="img-msg" />
-      <label>{{ user.name }}</label>
+      <div class="sc-mentioning-member" @click="mentionMember(user)">
+        <img alt="profile-img" :src="user.imageUrl" class="img-msg" />
+        <label>{{ user.name }}</label>
+      </div>
     </div>
   </div>
 </template>
@@ -30,6 +32,11 @@ export default {
         par.name.toLowerCase().includes(this.searchText.toLowerCase())
       )
     }
+  },
+  methods: {
+    mentionMember(user) {
+      this.$emit('mentionMember', user)
+    }
   }
 }
 </script>
@@ -42,6 +49,7 @@ export default {
   overflow-y: auto;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
+  cursor: pointer;
 }
 
 .sc-mentioning-member-container {
@@ -56,6 +64,11 @@ export default {
   border-radius: 50%;
   width: 20px;
   height: 20px;
+}
+
+.sc-mentioning-member,
+.sc-mentioning-member * {
+  cursor: pointer;
 }
 
 label {
