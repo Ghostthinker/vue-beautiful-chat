@@ -1,6 +1,10 @@
 <template>
   <div class="sc-mentioning-member-list">
-    <div v-for="(user, idx) in participants" :key="idx" class="sc-mentioning-member-container">
+    <div
+      v-for="(user, idx) in filteredParticipants"
+      :key="idx"
+      class="sc-mentioning-member-container"
+    >
       <img :src="user.imageUrl" class="img-msg" />
       <label>{{ user.name }}</label>
     </div>
@@ -14,6 +18,17 @@ export default {
     participants: {
       type: Array,
       required: true
+    },
+    searchText: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    filteredParticipants() {
+      return this.participants.filter((par) =>
+        par.name.toLowerCase().includes(this.searchText.toLowerCase())
+      )
     }
   }
 }

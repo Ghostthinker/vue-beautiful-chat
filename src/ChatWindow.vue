@@ -59,7 +59,12 @@
       @closeReplyPreview="closeReplyPreview"
     >
     </ReplyPreview>
-    <MentioningMemberList :participants="participants"> </MentioningMemberList>
+    <MentioningMemberList
+      v-if="isMentioning"
+      :search-text="mentioningText"
+      :participants="participants"
+    >
+    </MentioningMemberList>
     <UserInput
       v-if="!showUserList"
       :show-emoji="showEmoji"
@@ -71,7 +76,7 @@
       :message-parent="replyPreviewMessage"
       @onType="$emit('onType', $event)"
       @edit="$emit('edit', $event)"
-      @startMentioning="onStartMentioning()"
+      @startMentioning="onStartMentioning($event)"
       @endMentioning="onEndMentioning()"
       @messageSend="closeReplyPreview"
     />
@@ -186,7 +191,8 @@ export default {
       showUserList: false,
       replyPreviewMessage: null,
       replyPreviewAuthor: null,
-      isMentioning: false
+      isMentioning: false,
+      mentioningText: ''
     }
   },
   computed: {
@@ -212,10 +218,12 @@ export default {
       this.replyPreviewMessage = null
       this.replyPreviewAuthor = null
     },
-    onStartMentioning() {
+    onStartMentioning(event) {
+      this.mentioningText = event
       this.isMentioning = true
     },
     onEndMentioning() {
+      this.mentioningText = ''
       this.isMentioning = false
     }
   }

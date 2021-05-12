@@ -37,6 +37,7 @@
         @focus="setInputActive(true)"
         @blur="setInputActive(false)"
         @keydown="handleKey"
+        @keyup="handleKeyUp"
         @focusUserInput="focusUserInput()"
       ></div>
       <div class="sc-user-input--buttons">
@@ -200,59 +201,31 @@ export default {
         this._editFinish()
         event.preventDefault()
       }
-      this.checkMentioning(event)
       this.$emit('onType', this.$refs.userInput.textContent)
+    },
+    handleKeyUp(event) {
+      this.checkMentioning(event)
     },
     checkMentioning(event) {
       const cursorPosition = this._getCaretPosition()
       const text = this.$refs.userInput.textContent
       const textBeforeCursor = text.slice(0, cursorPosition)
-      const atTextBeforeCursor = textBeforeCursor.split(' @')
-      if (atTextBeforeCursor.length > 0) {
-        const foundMentioning = atTextBeforeCursor[atTextBeforeCursor.length - 1]
+      const searchedNames = textBeforeCursor.split('@')
+      if (searchedNames.length > 1) {
+        const searchedName = searchedNames[searchedNames.length - 1]
         const atIndex = textBeforeCursor.lastIndexOf('@')
-        // at sign is at beginning of text
-        if (atIndex === 0) {
+        // at sign is at beginning of text or has a blank before
+        if (atIndex === 0 || textBeforeCursor[atIndex - 1] === ' ') {
           this.mentioning = true
-          console.log('start mentioning')
-          this.$emit('startMentioning', this.$refs.userInput.textContent)
-        }
-        // at sign has a blank before
-        else if (textBeforeCursor[atIndex - 1] === ' ') {
-          this.mentioning = true
-          console.log('start mentioning')
-          this.$emit('startMentioning', this.$refs.userInput.textContent)
-        } else {
+          this.$emit('startMentioning', searchedName)
+        } else if (this.mentioning) {
           this.mentioning = false
-          console.log('end mentioning')
-          this.$emit('endMentioning', this.$refs.userInput.textContent)
+          this.$emit('endMentioning')
         }
+      } else if (this.mentioning) {
+        this.mentioning = false
+        this.$emit('endMentioning')
       }
-
-      //   if (text[atIndex - 1] === ' ' || text[atIndex] - 1)
-      // }
-      // // check for delete
-      // if (text.slice(0, cursorPosition))
-      //
-      // if (!this.mentioning) {
-      //   const isTypingAt =
-      //     event.key === '@' && (text.length === 0 || text[cursorPosition - 1] === ' ')
-      //   const atFoundBeforeBackspace =
-      //     event.key === 'Backspace' &&
-      //     text[cursorPosition - 1] === '@' &&
-      //     text[cursorPosition - 2] === ' '
-      //   if (isTypingAt || atFoundBeforeBackspace) {
-      //     this.mentioning = true
-      //     console.log('start mentioning')
-      //     this.$emit('startMentioning', this.$refs.userInput.textContent)
-      //   }
-      // } else {
-      //   if (this.mentioning && event.key === ' ' && text[cursorPosition - 1] === '@') {
-      //     this.mentioning = false
-      //     console.log('end mentioning')
-      //     this.$emit('endMentioning', this.$refs.userInput.textContent)
-      //   }
-      // }
     },
     focusUserInput() {
       this.$nextTick(() => {
