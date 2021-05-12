@@ -23,7 +23,7 @@
       :title-image-url="titleImageUrl"
       :is-open="isOpen"
       :change-context="changeContext"
-      :changeContextTooltip="changeContextTooltip"
+      :change-context-tooltip="changeContextTooltip"
       :show-emoji="showEmoji"
       :show-file="showFile"
       :show-edition="showEdition"
@@ -36,6 +36,7 @@
       :message-styling="messageStyling"
       :disable-user-list-toggle="disableUserListToggle"
       :typing-user-array="typingUserArray"
+      :jump-to-message="jumpToMessage"
       @scrollToTop="$emit('scrollToTop')"
       @onType="$emit('onType', $event)"
       @edit="$emit('edit', $event)"
@@ -236,6 +237,10 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    jumpToMessage: {
+      type: Number,
+      required: false
     }
   },
   computed: {

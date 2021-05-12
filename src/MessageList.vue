@@ -16,11 +16,12 @@
       :show-deletion="showDeletion"
       :show-reply="showReply"
       @remove="$emit('remove', message)"
-      @reply="$emit('reply',
-      {
-        'message': message,
-        'author' : profile(message.author)
-      })"
+      @reply="
+        $emit('reply', {
+          message: message,
+          author: profile(message.author)
+        })
+      "
     >
       <template v-slot:user-avatar="scopedProps">
         <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"> </slot>
@@ -106,6 +107,10 @@ export default {
     showReply: {
       type: Boolean,
       required: true
+    },
+    jumpToMessage: {
+      type: Number,
+      required: false
     }
   },
   computed: {
@@ -122,6 +127,12 @@ export default {
   methods: {
     _scrollDown() {
       this.$refs.scrollList.scrollTop = this.$refs.scrollList.scrollHeight
+      if (this.jumpToMessage) {
+        const message = document.getElementById('message' + this.jumpToMessage)
+        if (message) {
+          message.scrollIntoView()
+        }
+      }
     },
     handleScroll(e) {
       if (e.target.scrollTop === 0) {

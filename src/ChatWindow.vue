@@ -27,6 +27,7 @@
       :show-deletion="showDeletion"
       :show-reply="showReply"
       :message-styling="messageStyling"
+      :jump-to-message="jumpToMessage"
       @scrollToTop="$emit('scrollToTop')"
       @remove="$emit('remove', $event)"
       @reply="setReplyPreviewData"
@@ -174,6 +175,10 @@ export default {
     showReply: {
       type: Boolean,
       required: true
+    },
+    jumpToMessage: {
+      type: Number,
+      required: false
     }
   },
   data() {
@@ -274,14 +279,15 @@ export default {
   }
 }
 </style>
+
 <style>
 .online-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background-color: #9dff00;
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(112,112,112,1);
-    -moz-box-shadow: 0px 0px 0px 2px rgba(112,112,112,1);
-    box-shadow: 0px 0px 0px 2.5px rgba(112,112,112,1);
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: #9dff00;
+  -webkit-box-shadow: 0px 0px 0px 2px rgba(112, 112, 112, 1);
+  -moz-box-shadow: 0px 0px 0px 2px rgba(112, 112, 112, 1);
+  box-shadow: 0px 0px 0px 2.5px rgba(112, 112, 112, 1);
 }
 </style>

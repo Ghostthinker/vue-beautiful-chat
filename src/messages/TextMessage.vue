@@ -34,19 +34,21 @@
         class="sc-message--text-content sc-message--text-author"
         v-html="'~' + authorName"
       ></p>
-      <replyMessage
+      <ReplyMessage
         v-if="message.parent"
         :data-parent="message.parent.id"
         :message="message.parent"
         :author="message.parentAuthor"
-        :isClientMessage="message.author === 'me'"
-        :messageColors="messageColors"
+        :is-client-message="message.author === 'me'"
+        :message-colors="messageColors"
         @click.native="scrollToParentMessage"
       >
-      </replyMessage>
+      </ReplyMessage>
       <p class="sc-message--text-content" v-html="messageText"></p>
       <p v-if="message.data.meta" class="sc-message--meta" :style="{color: messageColors.color}">
-          <a v-if="sectionTitle" :href="sectionRef" :style="{color: messageColors.color}">{{ sectionTitle }} - </a>{{ date }}
+        <a v-if="sectionTitle" :href="sectionRef" :style="{color: messageColors.color}"
+          >{{ sectionTitle }} - </a
+        >{{ date }}
       </p>
       <p v-if="message.isEdited" class="sc-message--edited">
         <IconBase width="10" icon-name="edited">
@@ -137,10 +139,10 @@ export default {
       }
     },
     sectionTitle() {
-      return this.message.sectionTitle;
+      return this.message.sectionTitle
     },
     sectionRef() {
-      return '#Section-' + this.message.sectionId;
+      return '#Section-' + this.message.sectionId
     }
   },
   methods: {
@@ -157,7 +159,7 @@ export default {
     scrollToParentMessage(data) {
       const parentMessageId = data.currentTarget.dataset.parent
       const parentMessage = document.getElementById('message' + parentMessageId)
-      if(parentMessage) {
+      if (parentMessage) {
         parentMessage.scrollIntoView()
       }
     }
