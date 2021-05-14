@@ -27,6 +27,7 @@
       :show-deletion="showDeletion"
       :show-reply="showReply"
       :message-styling="messageStyling"
+      :jump-to-message="jumpToMessage"
       @scrollToTop="$emit('scrollToTop')"
       @remove="$emit('remove', $event)"
       @reply="setReplyPreviewData"
@@ -186,6 +187,10 @@ export default {
     showReply: {
       type: Boolean,
       required: true
+    },
+    jumpToMessage: {
+      type: Number,
+      required: false
     }
   },
   data() {
