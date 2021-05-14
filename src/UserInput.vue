@@ -145,6 +145,10 @@ export default {
     messageParent: {
       type: Object,
       required: false
+    },
+    metioningsArray: {
+      type: Array,
+      required: false
     }
   },
   data() {
@@ -271,7 +275,8 @@ export default {
               author: 'me',
               type: 'text',
               data: {text},
-              parent_id: this.messageParent ? this.messageParent.id : null
+              parent_id: this.messageParent ? this.messageParent.id : null,
+              mentionings: this.metioningsArray
             })
           )
         }

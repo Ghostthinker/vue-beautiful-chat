@@ -75,6 +75,7 @@
       :placeholder="placeholder"
       :colors="colors"
       :message-parent="replyPreviewMessage"
+      :metionings-array="metioningsArray"
       @onType="$emit('onType', $event)"
       @edit="$emit('edit', $event)"
       @startMentioning="onStartMentioning($event)"
@@ -193,7 +194,8 @@ export default {
       replyPreviewMessage: null,
       replyPreviewAuthor: null,
       isMentioning: false,
-      mentioningText: ''
+      mentioningText: '',
+      metioningsArray: []
     }
   },
   computed: {
@@ -230,6 +232,7 @@ export default {
     mentionMember(user) {
       console.log(user)
       this.isMentioning = false
+      this.metioningsArray.push(user.id)
     }
   }
 }
