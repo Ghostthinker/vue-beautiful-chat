@@ -50,14 +50,18 @@ export default {
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
 }
 
 .sc-mentioning-member-container {
-  height: 38px;
   border-bottom: 1px solid;
   border-color: #eaeaea;
   display: flex;
   align-items: center;
+  height: 38px;
+  flex-shrink: 0;
 }
 
 .img-msg {
