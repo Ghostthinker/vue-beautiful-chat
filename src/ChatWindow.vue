@@ -60,13 +60,6 @@
       @closeReplyPreview="closeReplyPreview"
     >
     </ReplyPreview>
-    <MentioningMemberList
-      v-if="isMentioning"
-      :search-text="mentioningText"
-      :participants="participants"
-      @mentionMember="mentionMember"
-    >
-    </MentioningMemberList>
     <UserInput
       v-if="!showUserList"
       :show-emoji="showEmoji"
@@ -76,11 +69,9 @@
       :placeholder="placeholder"
       :colors="colors"
       :message-parent="replyPreviewMessage"
-      :metionings-array="metioningsArray"
+      :participants="participants"
       @onType="$emit('onType', $event)"
       @edit="$emit('edit', $event)"
-      @startMentioning="onStartMentioning($event)"
-      @endMentioning="onEndMentioning()"
       @messageSend="onMessageSend()"
     />
   </div>
@@ -92,11 +83,9 @@ import MessageList from './MessageList.vue'
 import UserInput from './UserInput.vue'
 import UserList from './UserList.vue'
 import ReplyPreview from './ReplyPreview.vue'
-import MentioningMemberList from './MentioningMemberList.vue'
 
 export default {
   components: {
-    MentioningMemberList,
     Header,
     MessageList,
     UserInput,
@@ -197,10 +186,7 @@ export default {
     return {
       showUserList: false,
       replyPreviewMessage: null,
-      replyPreviewAuthor: null,
-      isMentioning: false,
-      mentioningText: '',
-      metioningsArray: []
+      replyPreviewAuthor: null
     }
   },
   computed: {
@@ -224,24 +210,10 @@ export default {
     },
     onMessageSend() {
       this.closeReplyPreview()
-      this.metioningsArray = []
     },
     closeReplyPreview() {
       this.replyPreviewMessage = null
       this.replyPreviewAuthor = null
-    },
-    onStartMentioning(event) {
-      this.mentioningText = event
-      this.isMentioning = true
-    },
-    onEndMentioning() {
-      this.mentioningText = ''
-      this.isMentioning = false
-    },
-    mentionMember(user) {
-      console.log(user)
-      this.isMentioning = false
-      this.metioningsArray.push(user.id)
     }
   }
 }

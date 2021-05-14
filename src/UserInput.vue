@@ -1,5 +1,12 @@
 <template>
   <div>
+    <MentioningMemberList
+      v-if="isMentioning"
+      :search-text="mentioningText"
+      :participants="participants"
+      @mentionMember="_mentionMember"
+    >
+    </MentioningMemberList>
     <Suggestions :suggestions="suggestions" :colors="colors" @sendSuggestion="_submitSuggestion" />
     <div
       v-if="file"
@@ -91,6 +98,7 @@ import store from './store/'
 import IconCross from './components/icons/IconCross.vue'
 import IconOk from './components/icons/IconOk.vue'
 import IconSend from './components/icons/IconSend.vue'
+import MentioningMemberList from './MentioningMemberList'
 
 export default {
   components: {
@@ -100,7 +108,8 @@ export default {
     Suggestions,
     IconCross,
     IconOk,
-    IconSend
+    IconSend,
+    MentioningMemberList
   },
   props: {
     icons: {
@@ -146,9 +155,9 @@ export default {
       type: Object,
       required: false
     },
-    metioningsArray: {
+    participants: {
       type: Array,
-      required: false
+      required: true
     }
   },
   data() {
@@ -157,7 +166,10 @@ export default {
       inputActive: false,
       store,
       doNotResetInputFlag: false,
-      mentioning: false
+      mentioning: false,
+      isMentioning: false,
+      mentioningText: '',
+      metioningsArray: []
     }
   },
   computed: {
@@ -210,6 +222,26 @@ export default {
     handleKeyUp(event) {
       this.checkMentioning(event)
     },
+    _onStartMentioning(searchedName) {
+      this.mentioningText = searchedName
+      this.isMentioning = true
+    },
+    _onEndMentioning() {
+      this.mentioningText = ''
+      this.isMentioning = false
+    },
+    _mentionMember(user) {
+      console.log(user)
+      this.isMentioning = false
+      this.metioningsArray.push(user.id)
+      const text = this.$refs.userInput.textContent
+      const cursorPosition = this._getCaretPosition()
+
+      const textBeforeCursor = text.slice(0, cursorPosition)
+      const atIndex = textBeforeCursor.lastIndexOf('@')
+      this.$refs.userInput.textContent =
+        text.substring(0, atIndex) + '[[user:' + user.id + ']] ' + text.substring(cursorPosition)
+    },
     checkMentioning(event) {
       const cursorPosition = this._getCaretPosition()
       const text = this.$refs.userInput.textContent
@@ -221,14 +253,14 @@ export default {
         // at sign is at beginning of text or has a blank before
         if (atIndex === 0 || textBeforeCursor[atIndex - 1] === ' ') {
           this.mentioning = true
-          this.$emit('startMentioning', searchedName)
+          this._onStartMentioning(searchedName)
         } else if (this.mentioning) {
           this.mentioning = false
-          this.$emit('endMentioning')
+          this._onEndMentioning()
         }
       } else if (this.mentioning) {
         this.mentioning = false
-        this.$emit('endMentioning')
+        this._onEndMentioning()
       }
     },
     focusUserInput() {
@@ -281,6 +313,7 @@ export default {
           )
         }
       }
+      this.metioningsArray = []
       this.$emit('messageSend')
     },
     _submitTextWhenFile(event, text, file) {
