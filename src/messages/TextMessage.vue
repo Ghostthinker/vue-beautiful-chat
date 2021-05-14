@@ -34,19 +34,21 @@
         class="sc-message--text-content sc-message--text-author"
         v-html="'~' + authorName"
       ></p>
-      <replyMessage
+      <ReplyMessage
         v-if="message.parent"
         :data-parent="message.parent.id"
         :message="message.parent"
         :author="message.parentAuthor"
-        :isClientMessage="message.author === 'me'"
-        :messageColors="messageColors"
+        :is-client-message="message.author === 'me'"
+        :message-colors="messageColors"
         @click.native="scrollToParentMessage"
       >
-      </replyMessage>
+      </ReplyMessage>
       <p class="sc-message--text-content" v-html="messageText"></p>
       <p v-if="message.data.meta" class="sc-message--meta" :style="{color: messageColors.color}">
-          <a v-if="sectionTitle" :href="sectionRef" :style="{color: messageColors.color}">{{ sectionTitle }} - </a>{{ date }}
+        <a v-if="sectionTitle" :href="sectionRef" :style="{color: messageColors.color}"
+          >{{ sectionTitle }} - </a
+        >{{ date }}
       </p>
       <p v-if="message.isEdited" class="sc-message--edited">
         <IconBase width="10" icon-name="edited">
@@ -103,6 +105,10 @@ export default {
     authorName: {
       type: String,
       required: true
+    },
+    participants: {
+      type: Array,
+      required: false
     }
   },
   data() {
@@ -112,8 +118,8 @@ export default {
   },
   computed: {
     messageText() {
-      const escaped = escapeGoat.escape(this.message.data.text)
-
+      let escaped = escapeGoat.escape(this.message.data.text)
+      escaped = this.extractMentionings(escaped)
       return Autolinker.link(this.messageStyling ? fmt(escaped) : escaped, {
         className: 'chatLink',
         truncate: {length: 50, location: 'smart'}
@@ -137,10 +143,10 @@ export default {
       }
     },
     sectionTitle() {
-      return this.message.sectionTitle;
+      return this.message.sectionTitle
     },
     sectionRef() {
-      return '#Section-' + this.message.sectionId;
+      return '#Section-' + this.message.sectionId
     }
   },
   methods: {
@@ -157,9 +163,21 @@ export default {
     scrollToParentMessage(data) {
       const parentMessageId = data.currentTarget.dataset.parent
       const parentMessage = document.getElementById('message' + parentMessageId)
-      if(parentMessage) {
+      if (parentMessage) {
         parentMessage.scrollIntoView()
       }
+    },
+    extractMentionings(escaped) {
+      const reRegExp = /\[\[user:(\d*)\]\]/g
+      var match
+      while ((match = reRegExp.exec(escaped)) != null) {
+        console.log(match)
+        const user = this.participants.filter((par) => par.id == match[1])
+        if (user && user.length === 1) {
+          escaped = escaped.replace(match[0], '@' + user[0].name)
+        }
+      }
+      return escaped
     }
   }
 }

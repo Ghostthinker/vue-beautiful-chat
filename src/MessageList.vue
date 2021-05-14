@@ -15,6 +15,7 @@
       :show-edition="showEdition"
       :show-deletion="showDeletion"
       :show-reply="showReply"
+      :participants="participants"
       @remove="$emit('remove', message)"
       @reply="$emit('reply',
       {
