@@ -81,7 +81,7 @@
       @edit="$emit('edit', $event)"
       @startMentioning="onStartMentioning($event)"
       @endMentioning="onEndMentioning()"
-      @messageSend="closeReplyPreview"
+      @messageSend="onMessageSend()"
     />
   </div>
 </template>
@@ -221,6 +221,10 @@ export default {
     setReplyPreviewData(data) {
       this.replyPreviewMessage = data.message
       this.replyPreviewAuthor = data.author
+    },
+    onMessageSend() {
+      this.closeReplyPreview()
+      this.metioningsArray = []
     },
     closeReplyPreview() {
       this.replyPreviewMessage = null
