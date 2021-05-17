@@ -304,9 +304,10 @@ export default {
         if (text.endsWith('@' + part.name)) {
           this.metioningsArray.push(part.id)
           text = text.replace(new RegExp('@' + part.name + '$'), '[[user:' + part.id + ']]')
-        } else if (text.includes('@' + part.name + ' ')) {
+        }
+        if (text.includes('@' + part.name + ' ')) {
           this.metioningsArray.push(part.id)
-          text = text.replace('@' + part.name + ' ', '[[user:' + part.id + ']] ')
+          text = text.replaceAll('@' + part.name + ' ', '[[user:' + part.id + ']] ')
         }
       })
       return text
@@ -546,7 +547,8 @@ export default {
 .slide-from-bottom-leave-active {
   transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.slide-from-bottom-enter, .slide-from-bottom-leave-to {
+.slide-from-bottom-enter,
+.slide-from-bottom-leave-to {
   transform: translateY(200px);
   opacity: 0.8;
 }
