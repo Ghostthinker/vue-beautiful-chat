@@ -31,8 +31,8 @@ export default {
   },
   computed: {
     filteredParticipants() {
-      return this.participants.filter((par) =>
-        par.name.toLowerCase().includes(this.searchText.toLowerCase())
+      return this.participants.filter(
+        (par) => par.name.toLowerCase().includes(this.searchText.toLowerCase()) && !par.deleted
       )
     }
   },
