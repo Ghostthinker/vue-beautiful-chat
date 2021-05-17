@@ -1,16 +1,18 @@
 <template>
   <div v-if="filteredParticipants.length > 0" class="sc-mentioning-member-list">
-    <div
-      v-for="(user, idx) in filteredParticipants"
-      :key="idx"
-      class="sc-mentioning-member-container"
-      @click="mentionMember(user)"
-    >
-      <div class="sc-mentioning-member">
-        <img alt="profile-img" :src="user.imageUrl" class="img-msg" />
-        <label>{{ user.name }}</label>
+    <transition-group name="slide-fade">
+      <div
+        v-for="user in filteredParticipants"
+        :key="user.id"
+        class="sc-mentioning-member-container"
+        @click="mentionMember(user)"
+      >
+        <div class="sc-mentioning-member">
+          <img alt="profile-img" :src="user.imageUrl" class="img-msg" />
+          <label>{{ user.name }}</label>
+        </div>
       </div>
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -48,6 +50,7 @@ export default {
   background-color: #f4f7f9;
   max-height: 200px;
   overflow-y: auto;
+  overflow-x: hidden;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
   cursor: pointer;
@@ -79,5 +82,17 @@ export default {
 label {
   margin-bottom: 0 !important;
   padding-left: 8px;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.4s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(200px);
+  opacity: 0.8;
 }
 </style>

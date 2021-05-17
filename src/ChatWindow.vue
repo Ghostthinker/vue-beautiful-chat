@@ -239,6 +239,7 @@ export default {
   animation-duration: 0.3s;
   animation-timing-function: ease-in-out;
   z-index: 10020;
+  overflow: hidden;
 }
 
 .sc-chat-window.closed {

@@ -1,12 +1,14 @@
 <template>
   <div>
-    <MentioningMemberList
-      v-if="isMentioning"
-      :search-text="mentioningText"
-      :participants="participants"
-      @mentionMember="_mentionMember"
-    >
-    </MentioningMemberList>
+    <transition name="slide-from-bottom">
+      <MentioningMemberList
+        v-if="isMentioning"
+        :search-text="mentioningText"
+        :participants="participants"
+        @mentionMember="_mentionMember"
+      >
+      </MentioningMemberList>
+    </transition>
     <Suggestions :suggestions="suggestions" :colors="colors" @sendSuggestion="_submitSuggestion" />
     <div
       v-if="file"
@@ -536,5 +538,16 @@ export default {
 
 .icon-file-message {
   margin-right: 5px;
+}
+
+.slide-from-bottom-enter-active {
+  transition: all 0.4s ease;
+}
+.slide-from-bottom-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-from-bottom-enter, .slide-from-bottom-leave-to {
+  transform: translateY(200px);
+  opacity: 0.8;
 }
 </style>
