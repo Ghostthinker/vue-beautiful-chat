@@ -169,7 +169,8 @@ export default {
       doNotResetInputFlag: false,
       isMentioning: false,
       mentioningText: '',
-      metioningsArray: []
+      metioningsArray: [],
+      currCursorPosition: null
     }
   },
   computed: {
@@ -234,20 +235,19 @@ export default {
       console.log(user)
       this.isMentioning = false
       const text = this.$refs.userInput.textContent
-      const cursorPosition = this._getCaretPosition()
 
-      const textBeforeCursor = text.slice(0, cursorPosition)
+      const textBeforeCursor = text.slice(0, this.currCursorPosition)
       const atIndex = textBeforeCursor.lastIndexOf('@')
       this.$refs.userInput.textContent =
-        text.substring(0, atIndex) + '@' + user.name + text.substring(cursorPosition)
+        text.substring(0, atIndex) + '@' + user.name + text.substring(this.currCursorPosition)
 
       this.$refs.userInput.focus()
-      this._setCaret(cursorPosition)
+      this._setCaret(this.currCursorPosition)
     },
     checkMentioning(event) {
-      const cursorPosition = this._getCaretPosition()
+      this.currCursorPosition = this._getCaretPosition()
       const text = this.$refs.userInput.textContent
-      const textBeforeCursor = text.slice(0, cursorPosition)
+      const textBeforeCursor = text.slice(0, this.currCursorPosition)
       const searchedNames = textBeforeCursor.split('@')
       if (searchedNames.length > 1) {
         const searchedName = searchedNames[searchedNames.length - 1]

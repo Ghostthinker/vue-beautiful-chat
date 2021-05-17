@@ -4,8 +4,9 @@
       v-for="(user, idx) in filteredParticipants"
       :key="idx"
       class="sc-mentioning-member-container"
+      @click="mentionMember(user)"
     >
-      <div class="sc-mentioning-member" @click="mentionMember(user)">
+      <div class="sc-mentioning-member">
         <img alt="profile-img" :src="user.imageUrl" class="img-msg" />
         <label>{{ user.name }}</label>
       </div>
@@ -70,9 +71,9 @@ export default {
   height: 20px;
 }
 
-.sc-mentioning-member,
-.sc-mentioning-member * {
+.sc-mentioning-member {
   cursor: pointer;
+  width: 100%;
 }
 
 label {
