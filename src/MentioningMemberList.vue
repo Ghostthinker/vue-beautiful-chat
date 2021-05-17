@@ -1,5 +1,5 @@
 <template>
-  <div class="sc-mentioning-member-list">
+  <div v-if="filteredParticipants.length > 0" class="sc-mentioning-member-list">
     <div
       v-for="(user, idx) in filteredParticipants"
       :key="idx"

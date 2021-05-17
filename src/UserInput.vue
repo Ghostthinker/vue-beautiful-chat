@@ -46,6 +46,7 @@
         @keydown="handleKey"
         @keyup="handleKeyUp"
         @focusUserInput="focusUserInput()"
+        @click="isMentioning = false"
       ></div>
       <div class="sc-user-input--buttons">
         <div class="sc-user-input--button"></div>
@@ -166,7 +167,6 @@ export default {
       inputActive: false,
       store,
       doNotResetInputFlag: false,
-      mentioning: false,
       isMentioning: false,
       mentioningText: '',
       metioningsArray: []
@@ -233,14 +233,16 @@ export default {
     _mentionMember(user) {
       console.log(user)
       this.isMentioning = false
-      this.metioningsArray.push(user.id)
       const text = this.$refs.userInput.textContent
       const cursorPosition = this._getCaretPosition()
 
       const textBeforeCursor = text.slice(0, cursorPosition)
       const atIndex = textBeforeCursor.lastIndexOf('@')
       this.$refs.userInput.textContent =
-        text.substring(0, atIndex) + '[[user:' + user.id + ']] ' + text.substring(cursorPosition)
+        text.substring(0, atIndex) + '@' + user.name + text.substring(cursorPosition)
+
+      this.$refs.userInput.focus()
+      this._setCaret(cursorPosition)
     },
     checkMentioning(event) {
       const cursorPosition = this._getCaretPosition()
@@ -252,14 +254,14 @@ export default {
         const atIndex = textBeforeCursor.lastIndexOf('@')
         // at sign is at beginning of text or has a blank before
         if (atIndex === 0 || textBeforeCursor[atIndex - 1] === ' ') {
-          this.mentioning = true
+          this.isMentioning = true
           this._onStartMentioning(searchedName)
-        } else if (this.mentioning) {
-          this.mentioning = false
+        } else if (this.isMentioning) {
+          this.isMentioning = false
           this._onEndMentioning()
         }
-      } else if (this.mentioning) {
-        this.mentioning = false
+      } else if (this.isMentioning) {
+        this.isMentioning = false
         this._onEndMentioning()
       }
     },
@@ -295,13 +297,26 @@ export default {
     onChange(value) {
       console.log(value)
     },
+    _buildMentionings(text) {
+      this.participants.forEach((part) => {
+        if (text.endsWith('@' + part.name)) {
+          this.metioningsArray.push(part.id)
+          text = text.replace(new RegExp('@' + part.name + '$'), '[[user:' + part.id + ']]')
+        } else if (text.includes('@' + part.name + ' ')) {
+          this.metioningsArray.push(part.id)
+          text = text.replace('@' + part.name + ' ', '[[user:' + part.id + ']] ')
+        }
+      })
+      return text
+    },
     _submitText(event) {
-      const text = this.$refs.userInput.textContent
+      let text = this.$refs.userInput.textContent
       const file = this.file
       if (file) {
         this._submitTextWhenFile(event, text, file)
       } else {
         if (text && text.length > 0) {
+          text = this._buildMentionings(text)
           this._checkSubmitSuccess(
             this.onSubmit({
               author: 'me',
@@ -389,6 +404,17 @@ export default {
         }
       }
       return caretPos
+    },
+    _setCaret(position) {
+      const editableDiv = this.$refs.userInput
+      let range = document.createRange()
+      let sel = window.getSelection()
+
+      range.setStart(editableDiv.childNodes[0], position)
+      range.collapse(true)
+
+      sel.removeAllRanges()
+      sel.addRange(range)
     }
   }
 }
