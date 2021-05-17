@@ -174,7 +174,7 @@ export default {
         console.log(match)
         const user = this.participants.filter((par) => par.id == match[1])
         if (user && user.length === 1) {
-          escaped = escaped.replace(match[0], '@' + user[0].name)
+          escaped = escaped.replaceAll(match[0], '*@' + user[0].name + '*')
         }
       }
       return escaped
@@ -187,5 +187,8 @@ export default {
 a.chatLink {
   color: inherit !important;
   text-decoration: underline;
+}
+strong {
+  font-weight: bold;
 }
 </style>
