@@ -31,6 +31,7 @@
         :show-edition="showEdition"
         :show-deletion="showDeletion"
         :show-reply="showReply"
+        :participants="participants"
         @remove="$emit('remove')"
         @reply="$emit('reply')"
       >
@@ -61,7 +62,12 @@
         :data="message.data"
         :message-colors="messageColors"
       />
-      <TypingMessage v-else-if="message.type === 'typing'" :message-colors="messageColors" :typing-user-array="typingUserArray" :participants="participants"/>
+      <TypingMessage
+        v-else-if="message.type === 'typing'"
+        :message-colors="messageColors"
+        :typing-user-array="typingUserArray"
+        :participants="participants"
+      />
       <SystemMessage
         v-else-if="message.type === 'system'"
         :data="message.data"

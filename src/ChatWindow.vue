@@ -27,6 +27,7 @@
       :show-deletion="showDeletion"
       :show-reply="showReply"
       :message-styling="messageStyling"
+      :jump-to-message="jumpToMessage"
       @scrollToTop="$emit('scrollToTop')"
       @remove="$emit('remove', $event)"
       @reply="setReplyPreviewData"
@@ -68,9 +69,10 @@
       :placeholder="placeholder"
       :colors="colors"
       :message-parent="replyPreviewMessage"
+      :participants="participants"
       @onType="$emit('onType', $event)"
       @edit="$emit('edit', $event)"
-      @messageSend="closeReplyPreview"
+      @messageSend="onMessageSend()"
     />
   </div>
 </template>
@@ -174,6 +176,10 @@ export default {
     showReply: {
       type: Boolean,
       required: true
+    },
+    jumpToMessage: {
+      type: Number,
+      required: false
     }
   },
   data() {
@@ -201,6 +207,9 @@ export default {
     setReplyPreviewData(data) {
       this.replyPreviewMessage = data.message
       this.replyPreviewAuthor = data.author
+    },
+    onMessageSend() {
+      this.closeReplyPreview()
     },
     closeReplyPreview() {
       this.replyPreviewMessage = null
@@ -230,6 +239,7 @@ export default {
   animation-duration: 0.3s;
   animation-timing-function: ease-in-out;
   z-index: 10020;
+  overflow: hidden;
 }
 
 .sc-chat-window.closed {
@@ -274,14 +284,15 @@ export default {
   }
 }
 </style>
+
 <style>
 .online-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background-color: #9dff00;
-    -webkit-box-shadow: 0px 0px 0px 2px rgba(112,112,112,1);
-    -moz-box-shadow: 0px 0px 0px 2px rgba(112,112,112,1);
-    box-shadow: 0px 0px 0px 2.5px rgba(112,112,112,1);
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: #9dff00;
+  -webkit-box-shadow: 0px 0px 0px 2px rgba(112, 112, 112, 1);
+  -moz-box-shadow: 0px 0px 0px 2px rgba(112, 112, 112, 1);
+  box-shadow: 0px 0px 0px 2.5px rgba(112, 112, 112, 1);
 }
 </style>

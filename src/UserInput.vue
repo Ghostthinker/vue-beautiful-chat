@@ -1,5 +1,14 @@
 <template>
   <div>
+    <transition name="slide-from-bottom">
+      <MentioningMemberList
+        v-if="isMentioning"
+        :search-text="mentioningText"
+        :participants="participants"
+        @mentionMember="_mentionMember"
+      >
+      </MentioningMemberList>
+    </transition>
     <Suggestions :suggestions="suggestions" :colors="colors" @sendSuggestion="_submitSuggestion" />
     <div
       v-if="file"
@@ -37,7 +46,9 @@
         @focus="setInputActive(true)"
         @blur="setInputActive(false)"
         @keydown="handleKey"
+        @keyup="handleKeyUp"
         @focusUserInput="focusUserInput()"
+        @click="isMentioning = false"
       ></div>
       <div class="sc-user-input--buttons">
         <div class="sc-user-input--button"></div>
@@ -90,6 +101,7 @@ import store from './store/'
 import IconCross from './components/icons/IconCross.vue'
 import IconOk from './components/icons/IconOk.vue'
 import IconSend from './components/icons/IconSend.vue'
+import MentioningMemberList from './MentioningMemberList'
 
 export default {
   components: {
@@ -99,7 +111,8 @@ export default {
     Suggestions,
     IconCross,
     IconOk,
-    IconSend
+    IconSend,
+    MentioningMemberList
   },
   props: {
     icons: {
@@ -144,6 +157,10 @@ export default {
     messageParent: {
       type: Object,
       required: false
+    },
+    participants: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -151,7 +168,11 @@ export default {
       file: null,
       inputActive: false,
       store,
-      doNotResetInputFlag: false
+      doNotResetInputFlag: false,
+      isMentioning: false,
+      mentioningText: '',
+      metioningsArray: [],
+      currCursorPosition: null
     }
   },
   computed: {
@@ -201,6 +222,51 @@ export default {
       }
       this.$emit('onType', this.$refs.userInput.textContent)
     },
+    handleKeyUp(event) {
+      this.checkMentioning(event)
+    },
+    _onStartMentioning(searchedName) {
+      this.mentioningText = searchedName
+      this.isMentioning = true
+    },
+    _onEndMentioning() {
+      this.mentioningText = ''
+      this.isMentioning = false
+    },
+    _mentionMember(user) {
+      console.log(user)
+      this.isMentioning = false
+      const text = this.$refs.userInput.textContent
+
+      const textBeforeCursor = text.slice(0, this.currCursorPosition)
+      const atIndex = textBeforeCursor.lastIndexOf('@')
+      this.$refs.userInput.textContent =
+        text.substring(0, atIndex) + '@' + user.name + text.substring(this.currCursorPosition)
+
+      this.$refs.userInput.focus()
+      this._setCaret(this.currCursorPosition)
+    },
+    checkMentioning(event) {
+      this.currCursorPosition = this._getCaretPosition()
+      const text = this.$refs.userInput.textContent
+      const textBeforeCursor = text.slice(0, this.currCursorPosition)
+      const searchedNames = textBeforeCursor.split('@')
+      if (searchedNames.length > 1) {
+        const searchedName = searchedNames[searchedNames.length - 1]
+        const atIndex = textBeforeCursor.lastIndexOf('@')
+        // at sign is at beginning of text or has a blank before
+        if (atIndex === 0 || textBeforeCursor[atIndex - 1] === ' ') {
+          this.isMentioning = true
+          this._onStartMentioning(searchedName)
+        } else if (this.isMentioning) {
+          this.isMentioning = false
+          this._onEndMentioning()
+        }
+      } else if (this.isMentioning) {
+        this.isMentioning = false
+        this._onEndMentioning()
+      }
+    },
     focusUserInput() {
       this.$nextTick(() => {
         this.$refs.userInput.focus()
@@ -230,23 +296,42 @@ export default {
       }
       this.doNotResetInputFlag = false
     },
+    onChange(value) {
+      console.log(value)
+    },
+    _buildMentionings(text) {
+      this.participants.forEach((part) => {
+        if (text.endsWith('@' + part.name)) {
+          this.metioningsArray.push(part.id)
+          text = text.replace(new RegExp('@' + part.name + '$'), '[[user:' + part.id + ']]')
+        }
+        if (text.includes('@' + part.name + ' ')) {
+          this.metioningsArray.push(part.id)
+          text = text.replaceAll('@' + part.name + ' ', '[[user:' + part.id + ']] ')
+        }
+      })
+      return text
+    },
     _submitText(event) {
-      const text = this.$refs.userInput.textContent
+      let text = this.$refs.userInput.textContent
       const file = this.file
       if (file) {
         this._submitTextWhenFile(event, text, file)
       } else {
         if (text && text.length > 0) {
+          text = this._buildMentionings(text)
           this._checkSubmitSuccess(
             this.onSubmit({
               author: 'me',
               type: 'text',
               data: {text},
-              parent_id: this.messageParent ? this.messageParent.id : null
+              parent_id: this.messageParent ? this.messageParent.id : null,
+              mentionings: this.metioningsArray
             })
           )
         }
       }
+      this.metioningsArray = []
       this.$emit('messageSend')
     },
     _submitTextWhenFile(event, text, file) {
@@ -296,6 +381,43 @@ export default {
     },
     _editFinish() {
       this.store.editMessage = null
+    },
+    _getCaretPosition() {
+      const editableDiv = this.$refs.userInput
+      let caretPos = 0
+      let sel
+      let range
+      if (window.getSelection) {
+        sel = window.getSelection()
+        if (sel.rangeCount) {
+          range = sel.getRangeAt(0)
+          if (range.commonAncestorContainer.parentNode === editableDiv) {
+            caretPos = range.endOffset
+          }
+        }
+      } else if (document.selection && document.selection.createRange) {
+        range = document.selection.createRange()
+        if (range.parentElement() === editableDiv) {
+          let tempEl = document.createElement('span')
+          editableDiv.insertBefore(tempEl, editableDiv.firstChild)
+          let tempRange = range.duplicate()
+          tempRange.moveToElementText(tempEl)
+          tempRange.setEndPoint('EndToEnd', range)
+          caretPos = tempRange.text.length
+        }
+      }
+      return caretPos
+    },
+    _setCaret(position) {
+      const editableDiv = this.$refs.userInput
+      let range = document.createRange()
+      let sel = window.getSelection()
+
+      range.setStart(editableDiv.childNodes[0], position)
+      range.collapse(true)
+
+      sel.removeAllRanges()
+      sel.addRange(range)
     }
   }
 }
@@ -417,5 +539,17 @@ export default {
 
 .icon-file-message {
   margin-right: 5px;
+}
+
+.slide-from-bottom-enter-active {
+  transition: all 0.4s ease;
+}
+.slide-from-bottom-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-from-bottom-enter,
+.slide-from-bottom-leave-to {
+  transform: translateY(200px);
+  opacity: 0.8;
 }
 </style>

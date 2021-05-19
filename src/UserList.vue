@@ -2,12 +2,11 @@
   <div class="user-list" :style="{background: userListColor.userList.bg}">
     <table style="padding-top: 5px;">
       <tbody>
-        <tr v-for="user in participants" :key="user.id">
+        <tr v-for="user in filteredParticipants" :key="user.id">
           <td style="text-align: center;">
             <div class="img-container">
               <img :src="user.imageUrl" class="img-msg" />
-              <div v-if="user.online" class="online-indicator">
-              </div>
+              <div v-if="user.online" class="online-indicator"></div>
             </div>
           </td>
           <td class="user-element" :style="{color: userListColor.userList.text}">
@@ -40,6 +39,9 @@ export default {
         }
       }
       return Object.assign(defaultColors, this.colors)
+    },
+    filteredParticipants() {
+      return this.participants.filter((par) => !par.deleted)
     }
   }
 }
@@ -53,7 +55,7 @@ export default {
   padding-top: 8px;
 }
 .img-container {
-  display:flex;
+  display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   margin-right: 5px;
