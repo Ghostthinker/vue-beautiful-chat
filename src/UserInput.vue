@@ -326,7 +326,7 @@ export default {
               type: 'text',
               data: {text},
               parent_id: this.messageParent ? this.messageParent.id : null,
-              mentionings: this.metioningsArray
+              mentionings: [...new Set(this.metioningsArray)]
             })
           )
         }
