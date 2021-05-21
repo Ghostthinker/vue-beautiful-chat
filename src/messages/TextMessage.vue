@@ -169,8 +169,10 @@ export default {
     },
     extractMentionings(escaped) {
       const reRegExp = /\[\[user:(\d*)\]\]/g
-      var match
-      while ((match = reRegExp.exec(escaped)) != null) {
+
+      let matches = escaped.matchAll(reRegExp)
+
+      for (const match of matches) {
         console.log(match)
         const user = this.participants.filter((par) => par.id == match[1])
         if (user && user.length === 1) {
