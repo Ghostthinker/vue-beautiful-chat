@@ -172,6 +172,7 @@ export default {
       isMentioning: false,
       mentioningText: '',
       metioningsArray: [],
+      atAllMentioning: false,
       currCursorPosition: null
     }
   },
@@ -310,6 +311,12 @@ export default {
           text = text.replaceAll('@' + part.name + ' ', '[[user:' + part.id + ']] ')
         }
       })
+      if (text.endsWith('@Alle')) {
+        this.atAllMentioning = true
+      }
+      if (text.includes('@Alle ')) {
+        this.atAllMentioning = true
+      }
       return text
     },
     _submitText(event) {
@@ -326,12 +333,14 @@ export default {
               type: 'text',
               data: {text},
               parent_id: this.messageParent ? this.messageParent.id : null,
-              mentionings: [...new Set(this.metioningsArray)]
+              mentionings: [...new Set(this.metioningsArray)],
+              atAllMentioning: this.atAllMentioning
             })
           )
         }
       }
       this.metioningsArray = []
+      this.atAllMentioning = false
       this.$emit('messageSend')
     },
     _submitTextWhenFile(event, text, file) {

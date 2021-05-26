@@ -8,7 +8,7 @@
         @click="mentionMember(user)"
       >
         <div class="sc-mentioning-member">
-          <img alt="profile-img" :src="user.imageUrl" class="img-msg" />
+          <img v-if="user.id !== 0" alt="profile-img" :src="user.imageUrl" class="img-msg" />
           <label>{{ user.name }}</label>
         </div>
       </div>
@@ -31,7 +31,16 @@ export default {
   },
   computed: {
     filteredParticipants() {
-      return this.participants.filter(
+      return [
+        {
+          id: 0,
+          name: 'Alle',
+          imageUrl: '',
+          online: false,
+          deleted: false
+        },
+        ...this.participants
+      ].filter(
         (par) => par.name.toLowerCase().includes(this.searchText.toLowerCase()) && !par.deleted
       )
     }
