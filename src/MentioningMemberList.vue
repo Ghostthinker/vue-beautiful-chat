@@ -41,7 +41,10 @@ export default {
         },
         ...this.participants
       ].filter(
-        (par) => par.name.toLowerCase().includes(this.searchText.toLowerCase()) && !par.deleted
+        (par) =>
+          par.name.toLowerCase().includes(this.searchText.toLowerCase()) &&
+          !par.deleted &&
+          par.showUserInParticipantList
       )
     }
   },

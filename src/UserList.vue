@@ -41,7 +41,7 @@ export default {
       return Object.assign(defaultColors, this.colors)
     },
     filteredParticipants() {
-      return this.participants.filter((par) => !par.deleted)
+      return this.participants.filter((par) => !par.deleted && par.showUserInParticipantList)
     }
   }
 }
