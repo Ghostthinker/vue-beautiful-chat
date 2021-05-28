@@ -39,13 +39,13 @@ export default {
           online: false,
           deleted: false
         },
-        ...this.participants
-      ].filter(
-        (par) =>
-          par.name.toLowerCase().includes(this.searchText.toLowerCase()) &&
-          !par.deleted &&
-          par.showUserInParticipantList
-      )
+        ...this.participants.filter(
+          (par) =>
+            par.name.toLowerCase().includes(this.searchText.toLowerCase()) &&
+            !par.deleted &&
+            par.showUserInParticipantList
+        )
+      ]
     }
   },
   methods: {
