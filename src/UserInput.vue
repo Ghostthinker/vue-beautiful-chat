@@ -5,6 +5,8 @@
         v-if="isMentioning"
         :search-text="mentioningText"
         :participants="participants"
+        :focus-on-member-list="focusOnMemberList"
+        :on-submit-first-mentioning-member="submitFirstMentioningMember"
         @mentionMember="_mentionMember"
       >
       </MentioningMemberList>
@@ -48,7 +50,10 @@
         @keydown="handleKey"
         @keyup="handleKeyUp"
         @focusUserInput="focusUserInput()"
-        @click="isMentioning = false"
+        @click="
+          isMentioning = false
+          focusOnMemberList = false
+        "
       ></div>
       <div class="sc-user-input--buttons">
         <div class="sc-user-input--button"></div>
@@ -172,7 +177,9 @@ export default {
       isMentioning: false,
       mentioningText: '',
       metioningsArray: [],
-      currCursorPosition: null
+      currCursorPosition: null,
+      focusOnMemberList: false,
+      submitFirstMentioningMember: false
     }
   },
   computed: {
@@ -208,7 +215,7 @@ export default {
       this.inputActive = onoff
     },
     handleKey(event) {
-      if (event.keyCode === 13 && !event.shiftKey) {
+      if (event.keyCode === 13 && !event.shiftKey && !this.isMentioning) {
         if (!this.isEditing) {
           this._submitText(event)
         } else {
@@ -216,8 +223,14 @@ export default {
         }
         this._editFinish()
         event.preventDefault()
+      } else if (event.keyCode === 13 && this.isMentioning) {
+        this.submitFirstMentioningMember = true
+        event.preventDefault()
       } else if (event.keyCode === 27) {
         this._editFinish()
+        event.preventDefault()
+      } else if (event.keyCode === 40) {
+        this.focusOnMemberList = true
         event.preventDefault()
       }
       this.$emit('onType', this.$refs.userInput.textContent)
@@ -232,18 +245,22 @@ export default {
     _onEndMentioning() {
       this.mentioningText = ''
       this.isMentioning = false
+      this.focusOnMemberList = false
     },
     _mentionMember(user) {
       console.log(user)
       this.isMentioning = false
+      this.focusOnMemberList = false
+      this.submitFirstMentioningMember = false
       const text = this.$refs.userInput.textContent
 
       const textBeforeCursor = text.slice(0, this.currCursorPosition)
       const atIndex = textBeforeCursor.lastIndexOf('@')
       this.$refs.userInput.textContent =
         text.substring(0, atIndex) + '@' + user.name + text.substring(this.currCursorPosition)
-
+      this.currCursorPosition = (atIndex + 1) + user.name.length
       this.$refs.userInput.focus()
+
       this._setCaret(this.currCursorPosition)
     },
     checkMentioning(event) {
@@ -260,10 +277,12 @@ export default {
           this._onStartMentioning(searchedName)
         } else if (this.isMentioning) {
           this.isMentioning = false
+          this.focusOnMemberList = false
           this._onEndMentioning()
         }
       } else if (this.isMentioning) {
         this.isMentioning = false
+        this.focusOnMemberList = false
         this._onEndMentioning()
       }
     },
