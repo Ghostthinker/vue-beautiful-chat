@@ -59,15 +59,16 @@ export default {
           name: 'Alle',
           imageUrl: '',
           online: false,
-          deleted: false
+          deleted: false,
+          showUserInParticipantList: true
         },
-        ...this.participants.filter(
-          (par) =>
-            par.name.toLowerCase().includes(this.searchText.toLowerCase()) &&
-            !par.deleted &&
-            par.showUserInParticipantList
-        )
-      ]
+        ...this.participants
+      ].filter(
+        (par) =>
+          par.name.toLowerCase().includes(this.searchText.toLowerCase()) &&
+          !par.deleted &&
+          par.showUserInParticipantList
+      )
     }
   },
   watch: {
@@ -103,7 +104,7 @@ export default {
       this.setCurrentFocus()
     },
     setCurrentFocus() {
-        this.$refs.mentioningMemberList.children[0].children[this.focusIndex].focus()
+      this.$refs.mentioningMemberList.children[0].children[this.focusIndex].focus()
     }
   }
 }
